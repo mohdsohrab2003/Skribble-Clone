@@ -10,7 +10,8 @@ interface RangeSliderProps<T extends string | number> {
   disabled?: boolean;
   className?: string;
 }
-export function RangeSlider({
+
+export function RangeSlider<T extends string | number>({
   label,
   icon,
   value,
