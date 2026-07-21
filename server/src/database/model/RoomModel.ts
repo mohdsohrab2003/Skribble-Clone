@@ -1,4 +1,12 @@
-import { Schema, model, Document, Types } from "mongoose";
+import { Schema, model, Document } from "mongoose";
+
+export type RoomStatus =
+  | "waiting"
+  | "starting"
+  | "choosing-word"
+  | "drawing"
+  | "round-end"
+  | "finished";
 
 export interface IRoomSettings {
   maxPlayers: number;
@@ -15,11 +23,11 @@ export interface IRoom extends Document {
 
   hostId: string;
 
-  playerIds: Types.ObjectId[];
+  playerIds: string[];
 
   settings: IRoomSettings;
 
-  status: "waiting" | "playing" | "finished";
+  status: RoomStatus;
 
   startedAt?: Date;
 
@@ -48,6 +56,7 @@ const roomSchema = new Schema<IRoom>(
     playerIds: [
       {
         type: String,
+        default: [],
       },
     ],
 
@@ -102,16 +111,20 @@ const roomSchema = new Schema<IRoom>(
       default: "waiting",
     },
 
-    startedAt: Date,
+    startedAt: {
+      type: Date,
+    },
 
-    endedAt: Date,
+    endedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-roomSchema.index({ roomCode: 1 });
+roomSchema.index({ roomCode: 1 }, { unique: true });
 roomSchema.index({ status: 1 });
 
-export const RoomModel = model<IRoom>("RoomModel", roomSchema);
+export const RoomModel = model<IRoom>("Room", roomSchema);
