@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo.png" alt="Skribbl Clone Logo" width="180">
+  <img src="assests/logo.png" alt="Skribbl Clone Logo" width="180">
 </p>
 
 <h1 align="center">🎨 Skribbl Clone</h1>
@@ -26,7 +26,7 @@
 # 📸 Preview
 
 <p align="center">
-  <img src="./assets/home.png" alt="Skribbl Clone Home Screen" width="100%">
+  <img src="assests/home.png" alt="Skribbl Clone Home Screen" width="100%">
 </p>
 
 ---
@@ -64,19 +64,19 @@
 ### 🏠 Home Page
 
 <p align="center">
-  <img src="./assets/home.png" width="100%">
+  <img src="assests/home.png" width="100%">
 </p>
 
 ### 🎨 Drawing Room
 
 <p align="center">
-  <img src="./assets/game.png" width="100%">
+  <img src="assests/game.png" width="100%">
 </p>
 
 ### 🏆 Leaderboard
 
 <p align="center">
-  <img src="./assets/leaderboard.png" width="100%">
+  <img src="assests/leaderboard.png" width="100%">
 </p>
 
 ---
@@ -84,7 +84,7 @@
 ## 🚀 Getting Started
 
 ```bash
-git clone https://github.com/yourusername/skribbl-clone.git
+git https://github.com/mohdsohrab2003/Skribble-Clone.git
 
 cd skribbl-clone
 ```
