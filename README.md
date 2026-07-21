@@ -121,6 +121,23 @@ git clone https://github.com/mohdsohrab2003/Skribble-Clone.git
 cd Skribble-Clone
 ```
 
+## ⚙️ Environment Variables
+
+### Client (`client/.env.local`)
+
+```env
+NEXT_PUBLIC_SOCKET_URL=
+```
+
+### Server (`server/.env`)
+
+```env
+PORT=
+CLIENT_URL=
+MONGODB_URI=
+NODE_ENV=
+```
+
 ## Backend
 
 ```bash
