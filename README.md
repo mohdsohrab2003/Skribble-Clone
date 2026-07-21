@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="assests/logo.png" alt="Skribbl Clone Logo" width="180">
+  <img src="assests/logo.png" width="180" alt="Skribbl Clone Logo">
 </p>
 
 <h1 align="center">🎨 Skribbl Clone</h1>
 
 <p align="center">
-  A modern real-time multiplayer drawing and guessing game built with <strong>Next.js</strong>, <strong>Node.js</strong>, <strong>Socket.IO</strong>, and <strong>MongoDB</strong>.
+A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built with Next.js, Node.js, Socket.IO, MongoDB and TypeScript.
 </p>
 
 <p align="center">
@@ -17,37 +17,39 @@
 ![Express](https://img.shields.io/badge/Express-000000?logo=express)
 ![Socket.IO](https://img.shields.io/badge/Socket.IO-black?logo=socket.io)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb)
-![TailwindCSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwind-css)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38B2AC?logo=tailwind-css)
 
 </p>
 
 ---
-
-# 📸 Preview
 
 <p align="center">
-  <img src="assests/home.png" alt="Skribbl Clone Home Screen" width="100%">
+  <a href="https://skribble-clone-eight.vercel.app/" target="_blank">
+    <img src="https://img.shields.io/badge/🚀%20Live%20Demo-Play%20Now-success?style=for-the-badge" alt="Live Demo">
+  </a>
 </p>
 
+<p align="center">
+  <strong>🌐 https://skribble-clone-eight.vercel.app/</strong>
+</p>
+# ✨ Features
+
+- 🎮 Real-time Multiplayer Rooms
+- 🎨 Smooth Canvas Drawing
+- ⚡ Instant Socket.IO Synchronization
+- 💬 Live Chat & Guessing
+- 🎯 Dynamic Score System
+- 🎲 Random Word Selection
+- ⏱️ Round Timer & Countdown
+- 👥 Public & Private Rooms
+- 🎭 Avatar Selection
+- 🌍 Multi-language Support
+- 📱 Responsive UI
+- 🏆 Final Leaderboard
+
 ---
 
-## ✨ Features
-
-- 🎮 Real-time multiplayer gameplay
-- 🖌️ Smooth collaborative drawing
-- 💬 Live chat with instant guessing
-- 🎯 Automatic scoring system
-- ⏳ Countdown & drawing timers
-- 🎲 Random word generation
-- 👥 Private room support
-- 🌍 Multi-language support
-- 🎭 Avatar selection
-- 📱 Fully responsive UI
-- ⚡ Powered by Socket.IO
-
----
-
-## 🏗️ Tech Stack
+# 🛠 Tech Stack
 
 | Frontend      | Backend   | Database |
 | ------------- | --------- | -------- |
@@ -59,37 +61,67 @@
 
 ---
 
-## 🖼️ Game Screenshots
+# 📸 Application Preview
 
-### 🏠 Home Page
-
-<p align="center">
-  <img src="assests/home.png" width="100%">
-</p>
-
-### 🎨 Drawing Room
+## 🏠 Home
 
 <p align="center">
-  <img src="assests/game.png" width="100%">
-</p>
-
-### 🏆 Leaderboard
-
-<p align="center">
-  <img src="assests/leaderboard.png" width="100%">
+<img src="assests/home.png" width="100%">
 </p>
 
 ---
 
-## 🚀 Getting Started
+## ➕ Create Room
+
+<p align="center">
+<img src="assests/create-room.png" width="100%">
+</p>
+
+---
+
+## 🚪 Join Room
+
+<p align="center">
+<img src="assests/join-room.png" width="100%">
+</p>
+
+---
+
+## 👥 Waiting Room
+
+<p align="center">
+<img src="assests/waiting.png" width="100%">
+</p>
+
+---
+
+## 🎨 Gameplay
+
+<p align="center">
+<img src="assests/game.png" width="100%">
+</p>
+
+---
+
+## 🏆 Game Over & Leaderboard
+
+<p align="center">
+<img src="assests/leaderboard.png" width="100%">
+</p>
+
+---
+
+# 🚀 Getting Started
+
+## Clone Repository
 
 ```bash
-git https://github.com/mohdsohrab2003/Skribble-Clone.git
+git clone https://github.com/mohdsohrab2003/Skribble-Clone.git
 
-cd skribbl-clone
+cd Skribble-Clone
 ```
 
-### Backend
+## Backend
 
 ```bash
 cd server
@@ -99,7 +131,13 @@ npm install
 npm run dev
 ```
 
-### Frontend
+Runs on
+
+```
+http://localhost:4000
+```
+
+## Frontend
 
 ```bash
 cd client
@@ -109,7 +147,7 @@ npm install
 npm run dev
 ```
 
-Open
+Runs on
 
 ```
 http://localhost:3000
@@ -117,55 +155,70 @@ http://localhost:3000
 
 ---
 
-## ⭐ Game Flow
+# 🎮 Game Flow
 
 ```text
+Home
+   │
+   ▼
 Create Room
-      │
-      ▼
+   │
+   ▼
 Players Join
-      │
-      ▼
-Host Starts Game
-      │
-      ▼
-Countdown
-      │
-      ▼
+   │
+   ▼
+Waiting Room
+   │
+   ▼
+Game Starts
+   │
+   ▼
 Choose Word
-      │
-      ▼
-Drawing
-      │
-      ▼
-Guessing
-      │
-      ▼
-Round End
-      │
-      ▼
-Next Drawer
-      │
-      ▼
+   │
+   ▼
+Draw
+   │
+   ▼
+Guess
+   │
+   ▼
+Round Complete
+   │
+   ▼
+Next Player
+   │
+   ▼
+Leaderboard
+   │
+   ▼
 Game Finished
 ```
 
 ---
 
-## 📂 Project Structure
+# 📂 Project Structure
 
 ```
-client/
-server/
-README.md
+Skribble-Clone
+│
+├── client
+│   ├── src
+│   ├── public
+│   └── package.json
+│
+├── server
+│   ├── src
+│   └── package.json
+│
+└── README.md
 ```
 
 ---
 
-## 👨‍💻 Author
+# 👨‍💻 Author
 
-**Mohammed Sohrab**
+## Mohammed Sohrab
 
 Full Stack Developer
 
-⭐ If you like this project, don't forget to star the repository!
+⭐ If you found this project helpful, please give it a star.
