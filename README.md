@@ -26,7 +26,7 @@
 # 📸 Preview
 
 <p align="center">
-  <img src="./assets/home.png" alt="Skribbl Clone Home Screen" width="100%">
+  <img src="(https://iili.io/CN2Uy7f.md.png" alt="Skribbl Clone Home Screen" width="100%">
 </p>
 
 ---
