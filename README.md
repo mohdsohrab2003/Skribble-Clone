@@ -26,7 +26,7 @@
 # 📸 Preview
 
 <p align="center">
-  <img src="(https://iili.io/CN2Uy7f.md.png" alt="Skribbl Clone Home Screen" width="100%">
+  <img src="./assets/home.png" alt="Skribbl Clone Home Screen" width="100%">
 </p>
 
 ---
@@ -49,13 +49,13 @@
 
 ## 🏗️ Tech Stack
 
-| Frontend | Backend | Database |
-|-----------|----------|----------|
-| Next.js | Node.js | MongoDB |
-| React | Express | Mongoose |
-| TypeScript | Socket.IO | |
-| Redux Toolkit | | |
-| Tailwind CSS | | |
+| Frontend      | Backend   | Database |
+| ------------- | --------- | -------- |
+| Next.js       | Node.js   | MongoDB  |
+| React         | Express   | Mongoose |
+| TypeScript    | Socket.IO |          |
+| Redux Toolkit |           |          |
+| Tailwind CSS  |           |          |
 
 ---
 
