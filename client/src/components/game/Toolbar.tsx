@@ -34,7 +34,7 @@ export default function Toolbar({ undo, redo, clear }: ToolbarProps) {
   const { tool, color, brushSize } = useAppSelector((state) => state.canvas);
 
   return (
-    <div className="mt-4 rounded-2xl border border-border bg-surface p-2 shadow-card sm:p-3">
+    <div className="mt-2 rounded-2xl border border-border bg-surface p-2 shadow-card sm:p-2">
       <div className="flex flex-col flex-wrap items-stretch gap-2 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
         {/* Tools */}
         <div className="flex items-center justify-center gap-2 rounded-xl bg-surface-2 p-1.5 sm:p-2">
@@ -83,7 +83,7 @@ export default function Toolbar({ undo, redo, clear }: ToolbarProps) {
         </div>
 
         {/* Brush Size */}
-        <div className="flex w-full items-center gap-3 rounded-xl bg-surface-2 p-2 sm:min-w-[220px] sm:flex-1">
+        <div className="flex w-full items-center gap-3 rounded-xl bg-surface-2 p-2 sm:min-w-50 sm:flex-1">
           <span className="w-10 shrink-0 text-center text-sm font-semibold text-text">
             {brushSize}px
           </span>

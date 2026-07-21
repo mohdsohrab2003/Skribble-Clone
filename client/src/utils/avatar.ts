@@ -91,3 +91,7 @@ export const avatars = [
     img: avatar14,
   },
 ];
+
+export const getAvatarById = (id: number) => {
+  return avatars.find((avatar) => avatar.id === id) ?? avatars[0];
+};

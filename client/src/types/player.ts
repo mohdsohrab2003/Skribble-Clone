@@ -1,7 +1,9 @@
 import { Avatar } from "@/utils/avatar";
 
 export interface Player {
-  id: number;
+  id: string;
+  socketId: string;
+
   name: string;
   avatar: Avatar;
 

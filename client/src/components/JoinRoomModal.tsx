@@ -1,48 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X, LogIn, Hash } from "lucide-react";
-import { socket } from "@/lib/socket";
 
 interface JoinRoomModalProps {
   open: boolean;
   onClose: () => void;
-  onJoin?: (roomId: string) => void;
+  onJoin: (data: { roomCode: string }) => void;
 }
 
-const JoinRoomModal = ({ open, onClose, onJoin }: JoinRoomModalProps) => {
-  const [roomId, setRoomId] = useState("");
-  const [error, setError] = useState("");
+export default function JoinRoomModal({
+  open,
+  onClose,
+  onJoin,
+}: JoinRoomModalProps) {
+  const [roomCode, setRoomCode] = useState("");
 
   if (!open) return null;
-  // useEffect(() => {
-  //   const handleRoomError = ({ message }: { message: string }) => {
-  //     setError(message);
-  //   };
-
-  //   socket.on("room-error", handleRoomError);
-
-  //   return () => {
-  //     socket.off("room-error", handleRoomError);
-  //   };
-  // }, []);
 
   const handleJoin = () => {
-    const id = roomId.trim().toUpperCase();
+    const code = roomCode.trim().toUpperCase();
 
-    if (!id) return;
+    if (!code) return;
 
-    socket.emit("join-room", id);
+    onJoin({ roomCode: code });
 
-    onJoin?.(id);
-
-    setRoomId("");
+    setRoomCode("");
     onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-      {error && <p className="mt-2 text-sm text-danger">{error}</p>}
       <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-surface/95 p-8 shadow-card backdrop-blur-xl">
         {/* Close */}
         <button
@@ -54,7 +42,7 @@ const JoinRoomModal = ({ open, onClose, onJoin }: JoinRoomModalProps) => {
 
         {/* Header */}
         <div className="mb-8 flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-card">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-card">
             <LogIn size={24} className="text-white" />
           </div>
 
@@ -62,31 +50,28 @@ const JoinRoomModal = ({ open, onClose, onJoin }: JoinRoomModalProps) => {
             <h2 className="text-2xl font-bold text-text">Join Room</h2>
 
             <p className="text-sm text-text-muted">
-              Enter the Room ID shared by your friend.
+              Enter your friend's room code.
             </p>
           </div>
         </div>
 
-        {/* Input */}
+        {/* Room Code */}
         <div>
           <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
             <Hash size={16} />
-            Room ID
+            Room Code
           </label>
 
           <input
-            value={roomId}
-            onChange={(e) => {
-              setRoomId(e.target.value.toUpperCase());
-              setError("");
-            }}
+            value={roomCode}
+            onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleJoin();
               }
             }}
-            placeholder="e.g. 8F4K2Q"
-            className="w-full rounded-xl border border-border bg-surface-2 px-4 py-3 uppercase text-text outline-none transition-all placeholder:text-text-muted focus:border-primary-light focus:ring-2 focus:ring-primary-light/20"
+            placeholder="e.g. ABC123"
+            className="w-full rounded-xl border border-border bg-surface-2 px-4 py-3 uppercase outline-none focus:border-primary-light"
           />
         </div>
 
@@ -94,15 +79,15 @@ const JoinRoomModal = ({ open, onClose, onJoin }: JoinRoomModalProps) => {
         <div className="mt-8 flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="rounded-xl border border-border px-5 py-3 font-medium text-text-muted transition hover:bg-surface-2 hover:text-text"
+            className="rounded-xl border border-border px-5 py-3 font-medium text-text-muted hover:bg-surface-2"
           >
             Cancel
           </button>
 
           <button
             onClick={handleJoin}
-            disabled={!roomId.trim()}
-            className="flex items-center gap-2 rounded-xl border border-sky-500 bg-sky-500/10 px-6 py-3 font-semibold text-sky-400 transition-all hover:bg-sky-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!roomCode.trim()}
+            className="flex items-center gap-2 rounded-xl border border-sky-500 bg-sky-500/10 px-6 py-3 font-semibold text-sky-400 transition hover:bg-sky-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
           >
             <LogIn size={18} />
             Join Room
@@ -111,5 +96,4 @@ const JoinRoomModal = ({ open, onClose, onJoin }: JoinRoomModalProps) => {
       </div>
     </div>
   );
-};
-export default JoinRoomModal;
+}

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Luckiest_Guy } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Providers from "./providers";
+import { SocketProvider } from "@/socket/SocketProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,8 +44,10 @@ export default function RootLayout({
     >
       <body className="min-h-screen font-sans bg-background text-text">
         <Providers>
-          <Navbar />
-          {children}
+          <SocketProvider>
+            <Navbar />
+            {children}
+          </SocketProvider>
         </Providers>
       </body>
     </html>

@@ -7,7 +7,7 @@ import { ChatMessage } from "@/types/chat";
 
 interface ChatProps {
   messages: ChatMessage[];
-  onSend: (message: ChatMessage) => void;
+  onSend: (text: string) => void;
 }
 
 const Chat = ({ messages, onSend }: ChatProps) => {
@@ -26,16 +26,7 @@ const Chat = ({ messages, onSend }: ChatProps) => {
 
     if (!text) return;
 
-    onSend({
-      id: crypto.randomUUID(),
-      sender: "You",
-      message: text,
-      createdAt: Date.now(),
-      time: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    });
+    onSend(text);
 
     setValue("");
   };
@@ -46,7 +37,9 @@ const Chat = ({ messages, onSend }: ChatProps) => {
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
           <h2 className="text-lg font-bold text-text">Chat</h2>
-          <p className="text-xs text-text-muted">{messages.length} Messages</p>
+          <p className="text-xs text-text-muted">
+            {messages.length} Message{messages.length !== 1 ? "s" : ""}
+          </p>
         </div>
 
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-2">
@@ -73,7 +66,7 @@ const Chat = ({ messages, onSend }: ChatProps) => {
                         : "text-primary-light"
                   }`}
                 >
-                  {msg.sender}
+                  {msg.playerName}
                 </span>
 
                 <span className="shrink-0 text-[10px] text-text-muted">
@@ -85,7 +78,7 @@ const Chat = ({ messages, onSend }: ChatProps) => {
               </div>
 
               <div
-                className={`inline-block max-w-full break-words rounded-xl px-3 py-2 text-sm ${
+                className={`max-w-full break-words rounded-xl px-3 py-2 text-sm ${
                   msg.isSystem
                     ? "bg-warning/15 text-warning"
                     : msg.isCorrect
@@ -106,19 +99,23 @@ const Chat = ({ messages, onSend }: ChatProps) => {
       <div className="border-t border-border p-3">
         <div className="flex items-center gap-2">
           <input
+            type="text"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            placeholder="Type your guess..."
+            maxLength={100}
+            autoComplete="off"
+            className="h-11 flex-1 rounded-xl border border-border bg-surface-2 px-4 text-sm text-text placeholder:text-text-muted outline-none transition focus:border-primary"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
                 submit();
               }
             }}
-            placeholder="Type your guess..."
-            className="h-11 flex-1 rounded-xl border border-border bg-surface-2 px-4 text-sm text-text placeholder:text-text-muted outline-none transition focus:border-primary"
           />
 
           <button
+            type="button"
             onClick={submit}
             disabled={!value.trim()}
             className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-white transition hover:bg-primary-light disabled:cursor-not-allowed disabled:opacity-50"

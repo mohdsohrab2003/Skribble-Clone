@@ -3,15 +3,24 @@
 import { Stroke } from "@/types/canvas";
 import { useEffect, useRef, useState } from "react";
 import { Tool } from "@/types/canvas";
+import { socket } from "@/socket/socket";
 export interface UseCanvasOptions {
   color?: string;
   size?: number;
   tool?: Tool;
+  canDraw?: boolean;
+  onStrokeComplete?: (stroke: Stroke) => void;
 }
 
 export const useCanvas = (
   canvasRef: React.RefObject<HTMLCanvasElement | null>,
-  { color = "#000000", size = 5, tool = "brush" }: UseCanvasOptions,
+  {
+    color = "#000000",
+    size = 5,
+    tool = "brush",
+    canDraw,
+    onStrokeComplete,
+  }: UseCanvasOptions,
 ) => {
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
 
@@ -58,6 +67,7 @@ export const useCanvas = (
   };
 
   const startDrawing = (e: PointerEvent) => {
+    if (!canDraw) return;
     if (!ctxRef.current) return;
 
     drawing.current = true;
@@ -77,6 +87,7 @@ export const useCanvas = (
   };
 
   const draw = (e: PointerEvent) => {
+    if (!canDraw) return;
     if (!drawing.current || !ctxRef.current || !currentStroke.current) return;
 
     const { x, y } = getPosition(e);
@@ -95,17 +106,23 @@ export const useCanvas = (
   };
 
   const stopDrawing = () => {
+    if (!canDraw) return;
     if (!drawing.current || !currentStroke.current) return;
 
     drawing.current = false;
 
-    strokes.current.push(currentStroke.current);
+    const finishedStroke = currentStroke.current;
+
+    strokes.current.push(finishedStroke);
+
+    onStrokeComplete?.(finishedStroke);
 
     redoStack.current = [];
 
     currentStroke.current = null;
 
     ctxRef.current?.closePath();
+
     updateHistoryState();
   };
   const redrawCanvas = () => {
@@ -137,6 +154,37 @@ export const useCanvas = (
       ctx.stroke();
     });
   };
+
+  const drawStroke = (stroke: Stroke) => {
+    const ctx = ctxRef.current;
+
+    if (!ctx || stroke.points.length === 0) return;
+
+    ctx.beginPath();
+
+    ctx.globalCompositeOperation =
+      stroke.tool === "eraser" ? "destination-out" : "source-over";
+
+    ctx.strokeStyle = stroke.color;
+    ctx.lineWidth = stroke.size;
+
+    ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+
+    for (let i = 1; i < stroke.points.length; i++) {
+      ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+    }
+
+    ctx.stroke();
+    ctx.closePath();
+  };
+  const drawRemoteStroke = (stroke: Stroke) => {
+    strokes.current.push(stroke);
+
+    drawStroke(stroke);
+
+    updateHistoryState();
+  };
+
   const undo = () => {
     const stroke = strokes.current.pop();
 
@@ -160,7 +208,18 @@ export const useCanvas = (
   const clear = () => {
     strokes.current = [];
     redoStack.current = [];
-    redrawCanvas();
+    currentStroke.current = null;
+
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+
+    if (!canvas || !ctx) return;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     updateHistoryState();
   };
 
@@ -181,11 +240,23 @@ export const useCanvas = (
       canvas.removeEventListener("pointerleave", stopDrawing);
     };
   });
+  useEffect(() => {
+    const handleClear = () => {
+      clear();
+    };
+
+    socket.on("drawing:clear", handleClear);
+
+    return () => {
+      socket.off("drawing:clear", handleClear);
+    };
+  }, []);
 
   return {
     undo,
     redo,
     clear,
+    drawRemoteStroke,
     canUndo,
     canRedo,
   };

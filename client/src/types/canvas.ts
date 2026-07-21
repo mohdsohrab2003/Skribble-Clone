@@ -22,4 +22,5 @@ export interface UseCanvasOptions {
   color?: string;
   size?: number;
   tool?: Tool;
+  canDraw?: boolean;
 }

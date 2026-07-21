@@ -1,9 +1,9 @@
 export interface ChatMessage {
   id: string;
-  sender: string;
+  playerId: string;
+  playerName: string;
   message: string;
   createdAt: number;
-  time: string;
-  isSystem?: boolean;
-  isCorrect?: boolean;
+  isSystem: boolean;
+  isCorrect: boolean;
 }

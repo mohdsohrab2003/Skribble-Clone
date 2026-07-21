@@ -12,19 +12,18 @@ import {
   Plus,
   User,
 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
+import { useSocket } from "@/socket/SocketProvider";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nextAvatar, previousAvatar } from "@/redux/slices/avatarSlice";
-import { useState } from "react";
-import CreateRoomModal from "./CreateRoomModal";
-import JoinRoomModal from "./JoinRoomModal";
+import { setLanguage, setMe, setPlayerName } from "@/redux/slices/playerSlice";
+import { RoomState, setRoom } from "@/redux/slices/roomSlice";
 
-interface Props {
-  playerName: string;
-  setPlayerName: React.Dispatch<React.SetStateAction<string>>;
-  language: string;
-  setLanguage: React.Dispatch<React.SetStateAction<string>>;
-}
+import CreateRoomModal, { RoomSettings } from "./CreateRoomModal";
+import JoinRoomModal from "./JoinRoomModal";
+import { Player } from "@/types/player";
 
 const randomNames = [
   "SketchHero",
@@ -37,50 +36,162 @@ const randomNames = [
 
 const languages = ["English", "Hindi", "Spanish", "French", "German"];
 
-const PlayerLobby = ({
-  playerName,
-  setPlayerName,
-  language,
-  setLanguage,
-}: Props) => {
+export default function PlayerLobby() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
+  const socket = useSocket();
+  const room = useAppSelector((state) => state.room);
+
   const [openJoinRoom, setOpenJoinRoom] = useState(false);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
+
+  const { playerName, language } = useAppSelector((state) => state.player);
 
   const selectedAvatar = useAppSelector((state) => state.avatar.selectedAvatar);
 
   const randomName = () => {
-    const random = randomNames[Math.floor(Math.random() * randomNames.length)];
-
-    setPlayerName(random);
+    dispatch(
+      setPlayerName(
+        randomNames[Math.floor(Math.random() * randomNames.length)],
+      ),
+    );
   };
 
+  const validatePlayer = () => {
+    if (!playerName.trim()) {
+      alert("Please enter your name.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const publicSettings: RoomSettings = useMemo(
+    () => ({
+      roomName: "",
+      maxPlayers: 8,
+      rounds: 3,
+      drawTime: 80,
+      wordChoices: 3,
+      hints: 2,
+      wordMode: "Normal",
+      isPrivate: false,
+    }),
+    [],
+  );
+
+  // Public Room
+  const handlePlay = () => {
+    if (!validatePlayer()) return;
+    // console.log("ROOM CREATED EVENT", room);
+
+    socket.emit("room:create", {
+      name: playerName.trim(),
+      avatarId: selectedAvatar.id,
+      language,
+      settings: publicSettings,
+    });
+  };
+
+  // Private Room
+  const handleCreateRoom = (settings: RoomSettings) => {
+    if (!validatePlayer()) return;
+
+    socket.emit("room:create", {
+      name: playerName.trim(),
+      avatarId: selectedAvatar.id,
+      language,
+      settings: {
+        ...settings,
+        isPrivate: true,
+      },
+    });
+    // console.log("ROOM CREATED EVENT", room);
+
+    setOpenCreateRoom(false);
+  };
+
+  // Join Room
+  const handleJoinRoom = ({ roomCode }: { roomCode: string }) => {
+    if (!validatePlayer()) return;
+
+    socket.emit("room:join", {
+      roomCode,
+      name: playerName.trim(),
+      avatarId: selectedAvatar.id,
+      language,
+    });
+
+    setOpenJoinRoom(false);
+  };
+
+  // useEffect(() => {
+  //   if (!socket) return;
+
+  //   const handleRoomCreated = ({
+  //     room,
+  //     player,
+  //   }: {
+  //     room: RoomState;
+  //     player: Player;
+  //   }) => {
+  //     dispatch(setRoom(room));
+  //     dispatch(setMe(player));
+
+  //     console.log("ROOM CREATED EVENT", room, player);
+
+  //     router.push(`/room/${room.code}`);
+  //   };
+  //   const handleRoomJoined = ({
+  //     room,
+  //     player,
+  //   }: {
+  //     room: RoomState;
+  //     player: Player;
+  //   }) => {
+  //     dispatch(setRoom(room));
+  //     dispatch(setMe(player));
+
+  //     router.push(`/room/${room.code}`);
+  //   };
+
+  //   socket.on("room:created", handleRoomCreated);
+  //   socket.on("room:joined", handleRoomJoined);
+
+  //   return () => {
+  //     socket.off("room:created", handleRoomCreated);
+  //     socket.off("room:joined", handleRoomJoined);
+  //   };
+  // }, [socket, dispatch, router]);
+  useEffect(() => {
+    if (room.code) {
+      router.push(`/room/${room.code}`);
+    }
+  }, [room.code, router]);
+  useEffect(() => {
+    console.log("ROOM IN REDUX", room);
+  }, [room]);
+
   return (
-    <div className="rounded-3xl border border-white/10 bg-card p-5">
-      {/* Top Form */}
+    <>
+      <div className="rounded-3xl border border-white/10 bg-card p-5">
+        {/* Name + Language */}
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
+          <div className="md:col-span-3 flex items-center rounded-xl border border-white/10 bg-surface px-4">
+            <User className="mr-3 text-violet-400" size={20} />
 
-      <div className="grid grid-cols-1 gap-2 md:grid-cols-4">
-        {/* Name */}
+            <input
+              value={playerName}
+              onChange={(e) => dispatch(setPlayerName(e.target.value))}
+              placeholder="Enter your name"
+              className="h-14 flex-1 bg-transparent outline-none"
+            />
 
-        <div className="md:col-span-3 flex items-center rounded-xl border border-white/10 bg-surface px-4">
-          <User className="mr-3 text-violet-400" size={20} />
+            <button onClick={randomName}>
+              <Dice5 className="text-gray-400 hover:text-violet-400" />
+            </button>
+          </div>
 
-          <input
-            value={playerName}
-            required
-            onChange={(e) => setPlayerName(e.target.value)}
-            placeholder="Enter your name"
-            className="h-14 flex-1 bg-transparent outline-none"
-          />
-
-          <button onClick={randomName}>
-            <Dice5 className="text-gray-400 hover:text-violet-400" />
-          </button>
-        </div>
-
-        {/* Language */}
-
-        <div>
           <div className="relative">
             <Globe2
               size={18}
@@ -89,16 +200,12 @@ const PlayerLobby = ({
 
             <select
               value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="h-14 w-full appearance-none rounded-xl border border-white/10 bg-surface pl-12 pr-12 text-white outline-none transition-all duration-200 hover:border-violet-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+              onChange={(e) => dispatch(setLanguage(e.target.value))}
+              className="h-14 w-full appearance-none rounded-xl border border-white/10 bg-surface pl-12 pr-12 outline-none"
             >
-              {languages.map((item) => (
-                <option
-                  key={item}
-                  value={item}
-                  className="bg-[#1e2130] text-white"
-                >
-                  {item}
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
                 </option>
               ))}
             </select>
@@ -109,98 +216,86 @@ const PlayerLobby = ({
             />
           </div>
         </div>
-      </div>
 
-      {/* Avatar Preview */}
-
-      <div className="relative mt-4 flex items-center justify-center">
-        <button
-          onClick={() => dispatch(previousAvatar())}
-          className="absolute left-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 hover:bg-primary"
-        >
-          <ChevronLeft />
-        </button>
-
-        <button
-          onClick={() => dispatch(nextAvatar())}
-          className="absolute right-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 hover:bg-primary"
-        >
-          <ChevronRight />
-        </button>
-
-        <div className="flex flex-col items-center">
-          <div className="relative h-35 w-35">
-            <Image
-              src={selectedAvatar.img}
-              alt={selectedAvatar.name}
-              fill
-              className="object-contain"
-            />
-          </div>
-
-          <h3 className="mt-1 text-xl font-semibold">
-            Player Name : {playerName}
-          </h3>
-        </div>
-      </div>
-
-      {/* Play */}
-
-      <button className="mt-5 flex h-12 w-2xl mx-auto items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-blue-500 text-3xl font-bold transition hover:scale-[1.02]">
-        <Play fill="white" size={28} />
-        Play!
-      </button>
-
-      <p className="mt-2 text-center text-gray-400">
-        Find a public room and start playing
-      </p>
-
-      {/* Create Room */}
-      <div className="mt-5 w-2xl mx-auto grid grid-cols-1 gap-4 md:grid-cols-2">
-        {/* Create Room */}
-        <div>
+        {/* Avatar */}
+        <div className="relative mt-5 flex items-center justify-center">
           <button
-            onClick={() => setOpenCreateRoom(true)}
-            className="flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-emerald-500 bg-emerald-500/10 text-lg font-semibold text-emerald-400 transition-all duration-200 hover:bg-emerald-500 hover:text-white"
+            onClick={() => dispatch(previousAvatar())}
+            className="absolute left-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 hover:bg-primary"
           >
-            <Plus size={20} />
-            Create Private Room
+            <ChevronLeft />
           </button>
 
-          <CreateRoomModal
-            open={openCreateRoom}
-            onClose={() => setOpenCreateRoom(false)}
-            onCreate={(settings) => {
-              console.log(settings);
-              setOpenCreateRoom(false);
-            }}
-          />
+          <button
+            onClick={() => dispatch(nextAvatar())}
+            className="absolute right-10 flex h-12 w-12 items-center justify-center rounded-full bg-white/5 hover:bg-primary"
+          >
+            <ChevronRight />
+          </button>
+
+          <div className="flex flex-col items-center">
+            <div className="relative h-36 w-36">
+              <Image
+                src={selectedAvatar.img}
+                alt={selectedAvatar.name}
+                fill
+                className="object-contain"
+              />
+            </div>
+
+            <h3 className="mt-2 text-xl font-semibold">
+              {playerName || "Player"}
+            </h3>
+          </div>
         </div>
 
-        {/* Join Room */}
-        <div>
+        {/* Public Play */}
+        <button
+          onClick={handlePlay}
+          className="mx-auto mt-5 flex h-12 w-full max-w-2xl items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-violet-600 to-blue-500 text-2xl font-bold hover:scale-[1.02]"
+        >
+          <Play fill="white" size={26} />
+          Play!
+        </button>
+
+        <p className="mt-2 text-center text-gray-400">
+          Find a public room and start playing
+        </p>
+
+        {/* Private */}
+        <div className="mx-auto mt-5 grid w-full max-w-2xl grid-cols-1 gap-4 md:grid-cols-2">
+          <button
+            onClick={() => setOpenCreateRoom(true)}
+            className="flex h-12 items-center justify-center gap-2 rounded-2xl border border-emerald-500 bg-emerald-500/10 font-semibold text-emerald-400 hover:bg-emerald-500 hover:text-white"
+          >
+            <Plus size={20} />
+            Create Room
+          </button>
+
           <button
             onClick={() => setOpenJoinRoom(true)}
-            className="flex h-12 w-full items-center justify-center gap-3 rounded-2xl border border-sky-500 bg-sky-500/10 text-lg font-semibold text-sky-400 transition-all duration-200 hover:bg-sky-500 hover:text-white"
+            className="flex h-12 items-center justify-center gap-2 rounded-2xl border border-sky-500 bg-sky-500/10 font-semibold text-sky-400 hover:bg-sky-500 hover:text-white"
           >
             <LogIn size={20} />
             Join Room
           </button>
-          <JoinRoomModal
-            open={openJoinRoom}
-            onClose={() => setOpenJoinRoom(false)}
-            onJoin={(settings) => {
-              console.log(settings);
-              setOpenJoinRoom(false);
-            }}
-          />
         </div>
+
+        <p className="mt-3 text-center text-gray-400">
+          Create a room and invite your friends.
+        </p>
       </div>
 
-      <p className="mt-3 text-center text-gray-400">
-        Create a room and invite your friends.
-      </p>
-    </div>
+      <CreateRoomModal
+        open={openCreateRoom}
+        onClose={() => setOpenCreateRoom(false)}
+        onCreate={handleCreateRoom}
+      />
+      <JoinRoomModal
+        open={openJoinRoom}
+        onClose={() => setOpenJoinRoom(false)}
+        onJoin={handleJoinRoom}
+      />
+    </>
   );
-};
-export default PlayerLobby;
+}

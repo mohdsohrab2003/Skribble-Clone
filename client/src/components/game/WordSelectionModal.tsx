@@ -15,6 +15,7 @@ export default function WordSelectionModal({
   timeLeft,
   onSelect,
 }: WordSelectionModalProps) {
+  // const isDrawer = me?.id === currentDrawerId;
   if (!open) return null;
 
   return (
