@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { Trophy, RotateCcw, Home, Crown } from "lucide-react";
 
-import { Player } from "@/utils/players";
 import { getAvatarById } from "@/utils/avatar";
+import { Player } from "@/types/player";
 
 interface GameOverModalProps {
   open: boolean;

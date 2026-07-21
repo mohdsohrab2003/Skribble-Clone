@@ -125,6 +125,6 @@ const roomSchema = new Schema<IRoom>(
 );
 
 roomSchema.index({ roomCode: 1 }, { unique: true });
-roomSchema.index({ status: 1 });
+// roomSchema.index({ status: 1 });
 
 export const RoomModel = model<IRoom>("Room", roomSchema);
