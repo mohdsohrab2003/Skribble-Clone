@@ -50,13 +50,13 @@ export default function GamePage() {
       word,
     });
   };
-  console.log("========== CLIENT ==========");
-  console.log("Phase:", phase);
-  console.log("Me:", me?.id);
-  console.log("Current Drawer:", currentDrawerId);
-  console.log("Is Drawer:", me?.id === currentDrawerId);
-  console.log("Word Choices:", wordChoices);
-  console.log("Room Status:", room.status);
+  // console.log("========== CLIENT ==========");
+  // console.log("Phase:", phase);
+  // console.log("Me:", me?.id);
+  // console.log("Current Drawer:", currentDrawerId);
+  // console.log("Is Drawer:", me?.id === currentDrawerId);
+  // console.log("Word Choices:", wordChoices);
+  // console.log("Room Status:", room.status);
   const Leave = () => {
     router.replace("/");
 
@@ -88,13 +88,6 @@ export default function GamePage() {
         <CountdownOverlay open={phase === "countdown"} count={countdown} />
 
         {/* Round Result */}
-        {/* <RoundResultModal
-          open={phase === "round-result"}
-          players={room.players}
-          round={room.currentRound}
-          totalRounds={room.settings.rounds}
-          nextRoundIn={5}
-        /> */}
 
         {/* Game Over */}
         <GameOverModal

@@ -41,7 +41,7 @@ A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built 
 - 🎯 Dynamic Score System
 - 🎲 Random Word Selection
 - ⏱️ Round Timer & Countdown
-- 👥 Public & Private Rooms
+- 👥 Private Rooms
 - 🎭 Avatar Selection
 - 🌍 Multi-language Support
 - 📱 Responsive UI
@@ -58,8 +58,7 @@ A real-time multiplayer drawing and guessing game inspired by Skribbl.io, built 
 | TypeScript    | Socket.IO |          |
 | Redux Toolkit |           |          |
 | Tailwind CSS  |           |          |
-
----
+| HTML 5 Canvas |
 
 # 📸 Application Preview
 
@@ -234,7 +233,7 @@ Skribble-Clone
 
 # 👨‍💻 Author
 
-## Mohammed Sohrab
+## Mohd Sohrab Alma
 
 Full Stack Developer
 

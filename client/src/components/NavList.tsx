@@ -27,7 +27,7 @@ const NavList = () => {
   ];
 
   return (
-    <nav className="hidden items-center gap-10 md:flex">
+    <nav className="flex flex-col gap-2 lg:flex-row lg:items-center lg:gap-8">
       {navItems.map((item) => {
         const Icon = item.icon;
         const active = pathname === item.href;
@@ -37,17 +37,22 @@ const NavList = () => {
             key={item.href}
             href={item.href}
             className={clsx(
-              "group relative flex items-center gap-2 font-medium transition",
-              active ? "text-white" : "text-gray-400 hover:text-white",
+              "group relative flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium transition-all duration-200",
+              "lg:px-0 lg:py-0 lg:rounded-none",
+              active
+                ? "bg-violet-500/15 text-white lg:bg-transparent"
+                : "text-gray-400 hover:bg-white/5 hover:text-white lg:hover:bg-transparent",
             )}
           >
             <Icon size={18} />
-            {item.label}
 
+            <span>{item.label}</span>
+
+            {/* Desktop underline */}
             <span
               className={clsx(
-                "absolute -bottom-3 left-0 h-1 rounded-full bg-violet-500 transition-all duration-300",
-                active ? "w-full" : "w-0 group-hover:w-0",
+                "absolute -bottom-2 left-0 hidden h-0.5 rounded-full bg-violet-500 transition-all duration-300 lg:block",
+                active ? "w-full" : "w-0 group-hover:w-full",
               )}
             />
           </Link>
@@ -56,4 +61,5 @@ const NavList = () => {
     </nav>
   );
 };
+
 export default NavList;
